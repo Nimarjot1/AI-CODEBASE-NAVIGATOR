@@ -223,7 +223,9 @@ Vector store created successfully
 
 Example of the system processing a GitHub repository and generating vector embeddings.
 
-
+<p align="center">
+  <img src="image.png" width="900">
+</p>
 
 ---
 
