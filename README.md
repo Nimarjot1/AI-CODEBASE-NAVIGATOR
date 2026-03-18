@@ -102,7 +102,7 @@ Converts code → vectors for semantic understanding.
 
 ### 4. Vector Search
 
-FAISS is used to retrieve the most relevant code:
+FAISS retrieves the most relevant code:
 
 ```
 Query → "What does app.use() do?"
@@ -126,17 +126,27 @@ This enables:
 
 ---
 
-# 🖥️ Example Output
+# 📸 Project Demo
 
-```
-🔍 Retrieved Files:
-- repos/express/lib/application.js
-- repos/express/lib/response.js
+### 🔍 Code Retrieval + AI Answer
 
-AI Answer:
+This shows how the system retrieves relevant files and generates answers.
 
-'app.use()' is used to register middleware functions...
-```
+<p align="center">
+  <img src="Image1.png" width="900"><br>
+  <b>RAG retrieving relevant files + generating answer</b>
+</p>
+
+---
+
+### 💻 Interactive CLI Interface
+
+Users can ask natural language questions and explore codebases.
+
+<p align="center">
+  <img src="Image2.png" width="900"><br>
+  <b>Interactive CLI for querying repositories</b>
+</p>
 
 ---
 
@@ -179,13 +189,16 @@ What does app.use() do in Express?
 
 ---
 
-# 🧪 Sample Output
+# 🧪 Example Output
 
-✔ Repository loaded
-✔ Chunks created
-✔ Vector store built
-✔ Relevant files retrieved
-✔ AI-generated explanation
+```
+🔍 Retrieved Files:
+- repos/express/lib/application.js
+- repos/express/lib/response.js
+
+AI Answer:
+'app.use()' is used to register middleware functions...
+```
 
 ---
 
@@ -193,14 +206,14 @@ What does app.use() do in Express?
 
 * Python
 * LangChain
-* FAISS (Vector DB)
+* FAISS (Vector Database)
 * Sentence Transformers
 * Ollama (Local LLM - LLaMA3)
 * GitPython
 
 ---
 
-# 🔥 What Makes This Project Strong
+# 🔥 What Makes This Project Stand Out
 
 This is NOT just a chatbot.
 
@@ -212,7 +225,7 @@ It demonstrates:
 ✔ Real-world developer tooling
 ✔ Scalable system design
 
-👉 This is the same architecture used in:
+👉 Similar concepts are used in:
 
 * GitHub Copilot Workspace
 * Sourcegraph Cody
