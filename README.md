@@ -1,143 +1,94 @@
-# AI Codebase Navigator
-### Semantic Search Engine for Software Repositories
+# 🚀 AI Codebase Navigator
 
-AI Codebase Navigator is an experimental system designed to **analyze and navigate large software repositories using semantic understanding instead of simple keyword search**.
+### 🔍 Semantic Search + RAG for GitHub Repositories
 
-Traditional search tools rely on exact keyword matching, which often fails when developers do not know the exact function names or identifiers.
+AI Codebase Navigator is an AI-powered system that enables developers to **understand and explore large codebases using natural language queries** instead of traditional keyword search.
 
-This project explores how **embeddings and vector search** can enable developers to locate relevant code snippets across repositories using **semantic similarity**.
-
-The system is being built as a **Retrieval-Augmented Generation (RAG) pipeline for codebases**, where the first goal is to build a reliable **code ingestion and indexing infrastructure**.
+It combines **vector search + Retrieval-Augmented Generation (RAG)** to locate and explain relevant parts of a repository.
 
 ---
 
-# The Problem
+# 💡 Problem
 
-Modern software repositories contain **thousands of files and millions of lines of code**.
+Modern repositories contain **thousands of files and millions of lines of code**.
 
 Developers often struggle with questions like:
 
-- Where is authentication implemented?
-- Which files handle middleware logic?
-- Where is a particular feature defined?
-- Which functions manipulate a certain data structure?
+* Where is middleware implemented?
+* How does routing work?
+* Which files handle authentication?
+* Where is a specific feature defined?
 
-Traditional tools like `grep` or GitHub search depend on **exact keyword matching**, which is often insufficient.
+Traditional tools like `grep` or GitHub search rely on **exact keyword matching**, which often fails.
 
-Large Language Models (LLMs) could help answer these questions — but they **cannot read entire repositories due to context window limits**.
+LLMs can help — but:
 
-Therefore we need an intermediate system that:
+❌ They cannot read entire repositories
+❌ Context window is limited
 
-1. Reads the repository
-2. Breaks code into meaningful chunks
-3. Converts those chunks into embeddings
-4. Stores embeddings in a vector database
-5. Retrieves relevant code when needed
-
-This project focuses on building that **core infrastructure**.
+👉 So we need a system that retrieves only **relevant code** before asking the model.
 
 ---
 
-# Project Goal
+# 🎯 Solution
 
-The goal of this project is to build an **AI-powered navigation layer for software repositories** that allows developers to explore large codebases using **semantic search and natural language queries**.
-
-The system is being built incrementally using a **modular architecture**.
-
-Current implementation focuses on:
-
-- Repository ingestion  
-- Code parsing  
-- Code chunk generation  
-- Embedding generation  
-- Vector indexing  
-
-Future versions will integrate **LLM reasoning for intelligent code understanding**.
-
----
-
-# System Architecture
-
-## Current Pipeline
-
-```
-GitHub Repository
-        ↓
-Repository Cloning
-        ↓
-Source Code Loader
-        ↓
-Code Chunking
-        ↓
-Embedding Generation
-        ↓
-Vector Database Index
-```
-
-## Future Architecture
+This project implements a **Retrieval-Augmented Generation (RAG) pipeline for codebases**:
 
 ```
 GitHub Repo
    ↓
+Code Loader
+   ↓
 Chunking
    ↓
-Embeddings
+Embeddings (MiniLM)
    ↓
-Vector DB
+Vector Database (FAISS)
    ↓
 Retriever
    ↓
-LLM Reasoning
+Local LLM (LLaMA3 via Ollama)
    ↓
 Answer Generation
 ```
 
 ---
 
-# Current Implementation
+# ⚙️ Features
 
-The current version successfully performs **repository ingestion and semantic indexing**.
+✅ Clone and process any GitHub repository
+✅ Intelligent code chunking
+✅ Semantic embeddings using transformers
+✅ Vector search using FAISS
+✅ Local LLM integration (Ollama — no API cost)
+✅ Natural language query interface
+✅ Debug view showing retrieved files
 
-## Repository Loader
+---
 
-Clones a GitHub repository and loads source files.
+# 🧠 How It Works
 
-Example:
+### 1. Repository Ingestion
 
 ```python
 repo = clone_repo("https://github.com/expressjs/express")
 files = load_code_files(repo)
 ```
 
-Example output:
+---
+
+### 2. Code Chunking
+
+* Splits large files into meaningful chunks
+* Improves retrieval accuracy
 
 ```
-Number of code files: 141
+Chunks created: 862
 ```
 
 ---
 
-## Code Chunking
-
-Large files are divided into smaller logical segments so embeddings capture meaningful context.
-
-Example output:
-
-```
-Number of chunks: 863
-```
-
-Chunking improves:
-
-- Embedding quality
-- Retrieval accuracy
-- Vector indexing performance
-
----
-
-## Embedding Generation
-
-Each chunk is converted into a semantic vector representation using a transformer model.
+### 3. Embedding Generation
 
 Model used:
 
@@ -145,153 +96,152 @@ Model used:
 sentence-transformers/all-MiniLM-L6-v2
 ```
 
-This allows the system to understand the **semantic meaning of code snippets**.
+Converts code → vectors for semantic understanding.
 
 ---
 
-## Vector Indexing
+### 4. Vector Search
 
-Embeddings are stored in a vector database which enables fast similarity search.
-
-Example capability:
+FAISS is used to retrieve the most relevant code:
 
 ```
-Query: "Where is middleware implemented?"
+Query → "What does app.use() do?"
 ```
-
-The system retrieves the **most relevant code chunks** from the repository.
 
 ---
 
-# Repository Structure
+### 5. RAG + LLM (🔥 Key Feature)
+
+Retrieved code is passed to a **local LLM (LLaMA3 via Ollama)**:
+
+```python
+llm = ChatOllama(model="llama3")
+```
+
+This enables:
+
+✔ Code explanation
+✔ Context-aware answers
+✔ Natural language interaction
+
+---
+
+# 🖥️ Example Output
 
 ```
-AI-CODEBASE-NAVIGATOR
+🔍 Retrieved Files:
+- repos/express/lib/application.js
+- repos/express/lib/response.js
+
+AI Answer:
+
+'app.use()' is used to register middleware functions...
+```
+
+---
+
+# 📁 Project Structure
+
+```
+backend/
 │
-├ repo_loader.py
-├ embedder.py
-├ main.py
-├ test_loader.py
-├ requirements.txt
+├── repo_loader.py      # Clone + load repo files
+├── embedder.py         # Chunking + embeddings + FAISS
+├── rag_engine.py       # RAG pipeline + LLM
+├── test_loader.py      # CLI interface
+├── requirements.txt
 ```
-
-### File Descriptions
-
-- **repo_loader.py** → Clones and loads Git repositories  
-- **embedder.py** → Handles chunking and embedding generation  
-- **main.py** → Pipeline orchestration  
-- **test_loader.py** → Debugging and ingestion testing  
 
 ---
 
-# Installation
+# ⚡ Installation
 
-Clone the repository:
-
-```
+```bash
 git clone https://github.com/Nimarjot1/AI-CODEBASE-NAVIGATOR.git
-cd AI-CODEBASE-NAVIGATOR
-```
+cd AI-CODEBASE-NAVIGATOR/backend
 
-Install dependencies:
-
-```
 pip install -r requirements.txt
 ```
 
 ---
 
-# Running the Project
+# ▶️ Run the Project
 
-Run the ingestion pipeline:
-
-```
+```bash
 python test_loader.py
 ```
 
-Example output:
+Then ask:
 
 ```
-Number of code files: 141
-Number of chunks: 863
-Vector store created successfully
+What does app.use() do in Express?
 ```
 
 ---
 
-# Project Screenshot
+# 🧪 Sample Output
 
-Example of the system processing a GitHub repository and generating vector embeddings.
-
-<p align="center">
-  <img src="image.png" width="900">
-</p>
-
----
-
-# Why This Project Exists
-
-Most "AI code assistants" rely heavily on external APIs.
-
-This project focuses on building the **core architecture of an AI code understanding system from scratch**, including:
-
-- Repository ingestion
-- Semantic indexing
-- Retrieval pipelines
-- Modular system design
-
-Understanding these systems is important for building real-world **AI developer tools**.
+✔ Repository loaded
+✔ Chunks created
+✔ Vector store built
+✔ Relevant files retrieved
+✔ AI-generated explanation
 
 ---
 
-# Future Improvements
+# 🧩 Tech Stack
 
-Planned extensions include:
-
-### Semantic Query Interface
-
-Allow developers to ask questions like:
-
-```
-Where is request validation implemented?
-```
+* Python
+* LangChain
+* FAISS (Vector DB)
+* Sentence Transformers
+* Ollama (Local LLM - LLaMA3)
+* GitPython
 
 ---
 
-### LLM Integration
+# 🔥 What Makes This Project Strong
 
-Use retrieved code chunks as context for a language model to generate explanations.
+This is NOT just a chatbot.
 
----
+It demonstrates:
 
-### Web Interface
+✔ RAG architecture
+✔ Vector databases
+✔ LLM integration
+✔ Real-world developer tooling
+✔ Scalable system design
 
-Build a frontend interface where developers can explore repositories interactively.
+👉 This is the same architecture used in:
 
----
-
-### Multi-Repository Indexing
-
-Allow indexing of multiple repositories into one searchable knowledge base.
-
----
-
-# Technologies Used
-
-- Python
-- SentenceTransformers
-- Vector Database
-- LangChain
-- Git Repository APIs
+* GitHub Copilot Workspace
+* Sourcegraph Cody
+* Cursor IDE
 
 ---
 
-# Author
+# 🚀 Future Improvements
 
-**Nimarjot Kaur**  
+* 🌐 Web UI (React + Node)
+* 📊 Multi-repo indexing
+* 🧠 Better ranking (rerankers)
+* ⚡ Streaming responses
+* 🔎 AST-based chunking (code-aware)
 
-GitHub  
-https://github.com/Nimarjot1  
+---
 
-LinkedIn  
+# 👩‍💻 Author
+
+**Nimarjot Kaur**
+
+🔗 GitHub:
+https://github.com/Nimarjot1
+
+🔗 LinkedIn:
 https://www.linkedin.com/in/nimarjot-kaur-03039b273/
+
+---
+
+# ⭐ If you like this project
+
+Give it a ⭐ on GitHub and share it!
